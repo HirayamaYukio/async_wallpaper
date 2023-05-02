@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
 
   late bool goToHome;
 
+
   @override
   void initState() {
     super.initState();
@@ -249,17 +250,30 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperLock() async {
+  Future<void> setWallpaperLock(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperUrlLock = 'Loading';
     });
     String result;
+
+	// Specify the wallpaper setting position
+	int left = 0; // Leftmost coordinate position
+	int top = 0; // Top edge coordinate position
+	int right = left + deviceWidth.round(); // Rightmost coordinate position
+	int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+
+
+
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaper(
         url: url,
         wallpaperLocation: AsyncWallpaper.LOCK_SCREEN,
         goToHome: goToHome,
+        left: left,
+		    top: top,
+		    right: right,
+		    bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -343,6 +357,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double deviceHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Plugin example app'),
@@ -418,7 +436,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperUrlHome\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperLock,
+                onPressed: () => setWallpaperLock(deviceWidth,deviceHeight),
                 child: _wallpaperUrlLock == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from Url lock'),

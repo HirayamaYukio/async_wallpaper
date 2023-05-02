@@ -90,10 +90,15 @@ class AsyncWallpaper {
   /// Function takes input url's image & location choice, and applies wallpaper depending on location choice
   /// You can also set the bool [goToHome] to instruct the app to take the user to the home screen
   /// to show the set wallpaper. If wallpaper set fails, user won't be taken to home screen.
+  /// Specify trimming position for left,top,right,bottom
   static Future<bool> setWallpaper({
     required String url,
     int wallpaperLocation = BOTH_SCREENS,
     bool goToHome = false,
+    int left = 0,
+    int top = 0,
+    int right = 0,
+    int bottom = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -104,6 +109,10 @@ class AsyncWallpaper {
     final options = {
       'url': url,
       'goToHome': goToHome,
+	  'left': left,
+	  'top': top,
+	  'right': right,
+	  'bottom': bottom,
     };
 
     String location = _SET_BOTH_WALLPAPER;

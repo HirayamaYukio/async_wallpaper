@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Pair;
+import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -29,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -53,12 +56,17 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
 
     private boolean redirectToLiveWallpaper;
     private boolean goToHome;
+    Map<String, Integer> coordinateMap = new HashMap<String, Integer>();
+	private int left;
+	private int top;
+	private int right;
+	private int bottom;
 
     private Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
             setWallPaperTask.execute(new Pair(resource, "1"));
         }
 
@@ -74,7 +82,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
             setWallPaperTask.execute(new Pair(resource, "2"));
         }
 
@@ -90,7 +98,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
             setWallPaperTask.execute(new Pair(resource, "3"));
         }
 
@@ -106,7 +114,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
             setWallPaperTask.execute(new Pair(resource, "4"));
         }
 
@@ -181,7 +189,16 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_lock_wallpaper")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
+            // android.util.Log.i("Arguments ", "configureFlutterEngine(left, top, right, bottom): " + left.toString() + ", "+ left.toString() + ", " + right.toString() + ", " + bottom.toString());
             Picasso.get().load(url).into(target1);
             try {
                 Thread.sleep(2000);
@@ -296,9 +313,12 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
 class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean> {
 
     private final Context mContext;
+    private final Map<String, Integer> mMap;
 
-    public SetWallPaperTask(final Context context) {
+    //public SetWallPaperTask(final Context context) {
+    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap) {
         mContext = context;
+		mMap = coordinateMap;
     }
 
     @Override
@@ -333,7 +353,9 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        wallpaperManager.setBitmap(pairs[0].first, null, true, WallpaperManager.FLAG_LOCK);
+                        Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
+                        wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_LOCK);
+
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
