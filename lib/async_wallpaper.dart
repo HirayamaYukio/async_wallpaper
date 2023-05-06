@@ -109,10 +109,10 @@ class AsyncWallpaper {
     final options = {
       'url': url,
       'goToHome': goToHome,
-	  'left': left,
-	  'top': top,
-	  'right': right,
-	  'bottom': bottom,
+      'left': left,
+	    'top': top,
+	    'right': right,
+	    'bottom': bottom,
     };
 
     String location = _SET_BOTH_WALLPAPER;
@@ -169,6 +169,10 @@ class AsyncWallpaper {
   static Future<bool> setWallpaperNative({
     required String url,
     bool goToHome = false,
+    int left = 0,
+    int top = 0,
+    int right = 0,
+    int bottom = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -179,6 +183,10 @@ class AsyncWallpaper {
     final options = {
       'url': url,
       'goToHome': goToHome,
+      'left': left,
+      'top': top,
+      'right': right,
+      'bottom': bottom,
     };
 
     result = await _channel.invokeMethod(
@@ -218,6 +226,10 @@ class AsyncWallpaper {
   static Future<bool> setWallpaperFromFileNative({
     required String filePath,
     bool goToHome = false,
+    int left = 0,
+    int top = 0,
+    int right = 0,
+    int bottom = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -228,6 +240,10 @@ class AsyncWallpaper {
     final options = {
       'url': filePath,
       'goToHome': goToHome,
+      'left': left,
+      'top': top,
+      'right': right,
+      'bottom': bottom,
     };
 
     result = await _channel.invokeMethod(
@@ -268,6 +284,10 @@ class AsyncWallpaper {
     required String filePath,
     int wallpaperLocation = BOTH_SCREENS,
     bool goToHome = false,
+    int left = 0,
+    int top = 0,
+    int right = 0,
+    int bottom = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -278,6 +298,10 @@ class AsyncWallpaper {
     final options = {
       'url': filePath,
       'goToHome': goToHome,
+      'left': left,
+      'top': top,
+      'right': right,
+      'bottom': bottom,
     };
 
     String location = _SET_BOTH_WALLPAPER_FILE;
@@ -344,6 +368,7 @@ class AsyncWallpaper {
     final options = {
       'url': filePath,
       'goToHome': goToHome,
+
     };
 
     result = await _channel.invokeMethod(

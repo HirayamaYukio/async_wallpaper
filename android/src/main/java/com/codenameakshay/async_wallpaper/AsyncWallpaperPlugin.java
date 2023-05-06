@@ -50,6 +50,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
+    private MethodChannel channel_home;
     public static Context context;
     private Activity activity;
     public static MethodChannel.Result res;
@@ -176,12 +177,28 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_wallpaper")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target);
             // result.success(1);
         } else if (call.method.equals("set_wallpaper_file")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target);
             // result.success(1);
@@ -211,6 +228,14 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_home_wallpaper")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target2);
             try {
@@ -224,6 +249,14 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_both_wallpaper")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target3);
             try {
@@ -237,6 +270,14 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_lock_wallpaper_file")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target1);
             if (goToHome) home();
@@ -245,6 +286,14 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_home_wallpaper_file")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target2);
             if (goToHome) home();
@@ -253,6 +302,14 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         } else if (call.method.equals("set_both_wallpaper_file")) {
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
+            left = call.argument("left");
+            top = call.argument("top");
+            right = call.argument("right");
+            bottom = call.argument("bottom");
+            coordinateMap.put("left", left);
+            coordinateMap.put("top", top);
+            coordinateMap.put("right", right);
+            coordinateMap.put("bottom", bottom);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target3);
             if (goToHome) home();
@@ -367,7 +424,8 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        wallpaperManager.setBitmap(pairs[0].first, null, true, WallpaperManager.FLAG_SYSTEM);
+                        Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
+                        wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_SYSTEM);
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -379,7 +437,8 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        wallpaperManager.setBitmap(pairs[0].first, null, true,
+                        Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
+                        wallpaperManager.setBitmap(pairs[0].first, rect, true,
                                 WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
                     }
                 } catch (IOException ex) {

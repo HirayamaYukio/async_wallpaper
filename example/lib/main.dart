@@ -27,6 +27,7 @@ class _MyAppState extends State<MyApp> {
   String _wallpaperUrlLock = 'Unknown';
   String _wallpaperUrlBoth = 'Unknown';
   String _liveWallpaper = 'Unknown';
+  // String url = 'https://images.ctfassets.net/s5n2t79q9icq/7BQBejPzI2WjDEYuq691n6/e1eda96008fe75a2acc028cf8c86dbbd/Sigarda_Font_of_Blessings_2560x1600_EN.png';
   String url = 'https://images.unsplash.com/photo-1635593701810-3156162e184f';
   String liveUrl = 'https://github.com/codenameakshay/sample-data/raw/main/video3.mp4';
 
@@ -62,17 +63,26 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperFromFileNative() async {
+  Future<void> setWallpaperFromFileNative(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperFileNative = 'Loading';
     });
     String result;
+    // Specify the wallpaper setting position
+    int left = 0; // Leftmost coordinate position
+    int top = 0; // Top edge coordinate position
+    int right = left + deviceWidth.round(); // Rightmost coordinate position
+    int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaperFromFileNative(
         filePath: file.path,
         goToHome: goToHome,
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -93,11 +103,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperFromFileHome() async {
+  Future<void> setWallpaperFromFileHome(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperFileHome = 'Loading';
     });
     String result;
+    // Specify the wallpaper setting position
+    int left = 0; // Leftmost coordinate position
+    int top = 0; // Top edge coordinate position
+    int right = left + deviceWidth.round(); // Rightmost coordinate position
+    int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -105,6 +120,10 @@ class _MyAppState extends State<MyApp> {
         filePath: file.path,
         wallpaperLocation: AsyncWallpaper.HOME_SCREEN,
         goToHome: goToHome,
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -125,11 +144,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperFromFileLock() async {
+  Future<void> setWallpaperFromFileLock(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperFileLock = 'Loading';
     });
     String result;
+    // Specify the wallpaper setting position
+    int left = 0; // Leftmost coordinate position
+    int top = 0; // Top edge coordinate position
+    int right = left + deviceWidth.round(); // Rightmost coordinate position
+    int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -137,6 +161,10 @@ class _MyAppState extends State<MyApp> {
         filePath: file.path,
         wallpaperLocation: AsyncWallpaper.LOCK_SCREEN,
         goToHome: goToHome,
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -157,11 +185,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperFromFileBoth() async {
+  Future<void> setWallpaperFromFileBoth(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperFileBoth = 'Loading';
     });
     String result;
+    // Specify the wallpaper setting position
+    int left = 0; // Leftmost coordinate position
+    int top = 0; // Top edge coordinate position
+    int right = left + deviceWidth.round(); // Rightmost coordinate position
+    int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -169,6 +202,10 @@ class _MyAppState extends State<MyApp> {
         filePath: file.path,
         wallpaperLocation: AsyncWallpaper.BOTH_SCREENS,
         goToHome: goToHome,
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -189,16 +226,25 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperNative() async {
+  Future<void> setWallpaperNative(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperUrlNative = 'Loading';
     });
     String result;
+    // Specify the wallpaper setting position
+    int left = 0; // Leftmost coordinate position
+    int top = 0; // Top edge coordinate position
+    int right = left + deviceWidth.round(); // Rightmost coordinate position
+    int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaperNative(
         url: url,
         goToHome: goToHome,
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -219,17 +265,26 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperHome() async {
+  Future<void> setWallpaperHome(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperUrlHome = 'Loading';
     });
     String result;
+	  // Specify the wallpaper setting position
+	  int left = 0; // Leftmost coordinate position
+	  int top = 0; // Top edge coordinate position
+	  int right = left + deviceWidth.round(); // Rightmost coordinate position
+	  int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaper(
         url: url,
         wallpaperLocation: AsyncWallpaper.HOME_SCREEN,
         goToHome: goToHome,
+        left: left,
+		    top: top,
+		    right: right,
+		    bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -255,14 +310,11 @@ class _MyAppState extends State<MyApp> {
       _wallpaperUrlLock = 'Loading';
     });
     String result;
-
-	// Specify the wallpaper setting position
-	int left = 0; // Leftmost coordinate position
-	int top = 0; // Top edge coordinate position
-	int right = left + deviceWidth.round(); // Rightmost coordinate position
-	int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
-
-
+	  // Specify the wallpaper setting position
+	  int left = 0; // Leftmost coordinate position
+	  int top = 0; // Top edge coordinate position
+	  int right = left + deviceWidth.round(); // Rightmost coordinate position
+	  int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -294,17 +346,26 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> setWallpaperBoth() async {
+  Future<void> setWallpaperBoth(double deviceWidth, double deviceHeight) async {
     setState(() {
       _wallpaperUrlBoth = 'Loading';
     });
     String result;
+	  int left = 0; // Leftmost coordinate position
+	  int top = 0; // Top edge coordinate position
+	  int right = left + deviceWidth.round(); // Rightmost coordinate position
+	  int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaper(
         url: url,
         wallpaperLocation: AsyncWallpaper.BOTH_SCREENS,
         goToHome: goToHome,
+        left: left,
+        top: top,
+        right: right,
+		    bottom: bottom,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -382,7 +443,7 @@ class _MyAppState extends State<MyApp> {
                     });
                   }),
               ElevatedButton(
-                onPressed: setWallpaperFromFileNative,
+                onPressed: () =>  setWallpaperFromFileNative(deviceWidth,deviceHeight),
                 child: _wallpaperFileNative == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from file native'),
@@ -391,7 +452,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperFileNative\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperFromFileHome,
+                onPressed: () =>  setWallpaperFromFileHome(deviceWidth,deviceHeight),
                 child: _wallpaperFileHome == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from file home'),
@@ -400,7 +461,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperFileHome\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperFromFileLock,
+                onPressed: () =>  setWallpaperFromFileLock(deviceWidth,deviceHeight),
                 child: _wallpaperFileLock == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from file lock'),
@@ -409,7 +470,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperFileLock\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperFromFileBoth,
+                onPressed: () =>  setWallpaperFromFileBoth(deviceWidth,deviceHeight),
                 child: _wallpaperFileBoth == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from file both'),
@@ -418,7 +479,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperFileBoth\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperNative,
+                onPressed: () =>  setWallpaperNative(deviceWidth,deviceHeight),
                 child: _wallpaperUrlNative == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from Url native'),
@@ -427,7 +488,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperUrlNative\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperHome,
+                onPressed: () =>  setWallpaperHome(deviceWidth,deviceHeight),
                 child: _wallpaperUrlHome == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from Url home'),
@@ -445,7 +506,7 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Wallpaper status: $_wallpaperUrlLock\n'),
               ),
               ElevatedButton(
-                onPressed: setWallpaperBoth,
+                onPressed:  () => setWallpaperBoth(deviceWidth,deviceHeight),
                 child: _wallpaperUrlBoth == 'Loading'
                     ? const CircularProgressIndicator()
                     : const Text('Set wallpaper from Url both'),
