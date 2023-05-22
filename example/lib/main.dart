@@ -27,7 +27,6 @@ class _MyAppState extends State<MyApp> {
   String _wallpaperUrlLock = 'Unknown';
   String _wallpaperUrlBoth = 'Unknown';
   String _liveWallpaper = 'Unknown';
-  // String url = 'https://images.ctfassets.net/s5n2t79q9icq/7BQBejPzI2WjDEYuq691n6/e1eda96008fe75a2acc028cf8c86dbbd/Sigarda_Font_of_Blessings_2560x1600_EN.png';
   String url = 'https://images.unsplash.com/photo-1635593701810-3156162e184f';
   String liveUrl = 'https://github.com/codenameakshay/sample-data/raw/main/video3.mp4';
 
