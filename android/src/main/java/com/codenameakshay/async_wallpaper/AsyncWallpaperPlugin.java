@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
+import android.graphics.Canvas;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -58,16 +60,23 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
     private boolean redirectToLiveWallpaper;
     private boolean goToHome;
     Map<String, Integer> coordinateMap = new HashMap<String, Integer>();
+    Map<String, Boolean> flgMap = new HashMap<String, Boolean>();
 	private int left;
 	private int top;
 	private int right;
 	private int bottom;
+    private int deviceWidth;
+    private int deviceHeight;
+    private boolean rectangleFlg;
+    private int centerX;
+    private int userCorrection;
+
 
     private Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
             setWallPaperTask.execute(new Pair(resource, "1"));
         }
 
@@ -83,7 +92,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
             setWallPaperTask.execute(new Pair(resource, "2"));
         }
 
@@ -99,7 +108,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
             setWallPaperTask.execute(new Pair(resource, "3"));
         }
 
@@ -115,7 +124,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
             setWallPaperTask.execute(new Pair(resource, "4"));
         }
 
@@ -181,10 +190,21 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
+
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target);
             // result.success(1);
@@ -195,10 +215,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target);
             // result.success(1);
@@ -210,10 +240,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             // android.util.Log.i("Arguments ", "configureFlutterEngine(left, top, right, bottom): " + left.toString() + ", "+ left.toString() + ", " + right.toString() + ", " + bottom.toString());
             Picasso.get().load(url).into(target1);
@@ -232,10 +272,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target2);
             try {
@@ -253,10 +303,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target3);
             try {
@@ -274,10 +334,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target1);
             if (goToHome) home();
@@ -290,10 +360,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target2);
             if (goToHome) home();
@@ -306,10 +386,20 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             top = call.argument("top");
             right = call.argument("right");
             bottom = call.argument("bottom");
+            deviceWidth = call.argument("deviceWidth");
+            deviceHeight = call.argument("deviceHeight");
+            rectangleFlg = call.argument("rectangleFlg");
+            centerX = call.argument("centerX");
+            userCorrection = call.argument("userCorrection");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
             coordinateMap.put("bottom", bottom);
+            coordinateMap.put("deviceWidth", deviceWidth);
+            coordinateMap.put("deviceHeight", deviceHeight);
+            coordinateMap.put("centerX",centerX);
+            coordinateMap.put("userCorrection",userCorrection);
+            flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target3);
             if (goToHome) home();
@@ -371,11 +461,15 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
 
     private final Context mContext;
     private final Map<String, Integer> mMap;
+    private final Map<String, Boolean> fMap;
+	private double const_mobileBaseSizeY = 1536.0;
+	private double const_mobileBaseSizeX = 1040.0;
 
     //public SetWallPaperTask(final Context context) {
-    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap) {
+    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap, final Map<String, Boolean> flgMap) {
         mContext = context;
 		mMap = coordinateMap;
+        fMap = flgMap;
     }
 
     @Override
@@ -407,33 +501,134 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                 }
             }
             case "2": {
+                // Pass when setting lock screen
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
-                        wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_LOCK);
+                        Bitmap image = pairs[0].first;
+                        int ImageWidth = image.getWidth();
+                        int ImageHeight = image.getHeight();
+
+                        if(fMap.get("rectangleFlg")){
+                            Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
+                            wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_LOCK);
+                        }else if(!fMap.get("rectangleFlg") && ImageWidth > ImageHeight){
+                            Map<String, Integer> map = mMap;
+                            int device_width = mMap.get("deviceWidth");
+                            int device_height = mMap.get("deviceHeight");
+                            int centerX = mMap.get("centerX");
+                            int startX = 0;
+                            int set_bitmap_width = ImageWidth;
+
+                            int Dw = wallpaperManager.getDesiredMinimumWidth();
+                            int Dh = wallpaperManager.getDesiredMinimumHeight();
+                            int Cw = (int) ((float) Dw / (float) Dh * ImageHeight);
+                            int Ch = (int)((float)ImageHeight / (float)Dw * Dh);
+
+                            double scale = const_mobileBaseSizeY/ImageHeight; // Calculate how many times the height of the image is the mobile base size
+                            int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
+                            int user_correction = (int)(mMap.get("userCorrection") * scale);
+
+                            // Resize to mobile base size based on height
+                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)const_mobileBaseSizeY, true);
+
+                            // Calculate start position X and end point
+                            startX = system_correction - (int)(const_mobileBaseSizeX/2) + user_correction;
+                            set_bitmap_width = (int)const_mobileBaseSizeX;
+
+                            // Change the starting position if the width overflows
+                            if(startX < 0){
+                                startX = 0;
+                            }else if(startX+set_bitmap_width > tmpBitmap.getWidth()){
+                                startX = tmpBitmap.getWidth() - (int)const_mobileBaseSizeX;
+                            }else if(tmpBitmap.getWidth() < set_bitmap_width){
+                                startX = 0;
+                                set_bitmap_width = tmpBitmap.getWidth();
+                            }
+
+                            // Formatted to mobileSize(1040*1536) size and set as home
+                            Bitmap trimBmp = Bitmap.createBitmap(tmpBitmap,startX,0,set_bitmap_width,tmpBitmap.getHeight(), null, true);
+                            wallpaperManager.setBitmap(trimBmp, null, true, WallpaperManager.FLAG_LOCK);
+                        }else{
+                            wallpaperManager.setBitmap(image, null, true, WallpaperManager.FLAG_LOCK);
+
+                        }
 
                     }
                 } catch (IOException ex) {
+                    ex.printStackTrace();
+                    return false;
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     return false;
                 }
                 break;
             }
             case "3": {
+                // Pass when setting home screen
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
-                        wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_SYSTEM);
+                        Bitmap image = pairs[0].first;
+                        int ImageWidth = image.getWidth();
+                        int ImageHeight = image.getHeight();
+
+                        if(fMap.get("rectangleFlg")){
+                            Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
+                            wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_SYSTEM);
+                        }else if(!fMap.get("rectangleFlg") && ImageWidth > ImageHeight){
+                            Map<String, Integer> map = mMap;
+                            int device_width = mMap.get("deviceWidth");
+                            int device_height = mMap.get("deviceHeight");
+                            int centerX = mMap.get("centerX");
+                            int startX = 0;
+                            int set_bitmap_width = ImageWidth;
+
+                            int Dw = wallpaperManager.getDesiredMinimumWidth();
+                            int Dh = wallpaperManager.getDesiredMinimumHeight();
+                            int Cw = (int) ((float) Dw / (float) Dh * ImageHeight);
+                            int Ch = (int)((float)ImageHeight / (float)Dw * Dh);
+
+                            double scale = const_mobileBaseSizeY/ImageHeight; // Calculate how many times the height of the image is the mobile base size
+                            int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
+                            int user_correction = (int)(mMap.get("userCorrection") * scale);
+
+                            // Resize to mobile base size based on height
+                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)const_mobileBaseSizeY, true);
+
+                            // Calculate start position X and end point
+                            startX = system_correction - (int)(const_mobileBaseSizeX/2) + user_correction;
+                            set_bitmap_width = (int)const_mobileBaseSizeX;
+
+                            // Change the starting position if the width overflows
+                            if(startX < 0){
+                                startX = 0;
+                            }else if(startX+set_bitmap_width > tmpBitmap.getWidth()){
+                                startX = tmpBitmap.getWidth() - (int)const_mobileBaseSizeX;
+                            }else if(tmpBitmap.getWidth() < set_bitmap_width){
+                                startX = 0;
+                                set_bitmap_width = tmpBitmap.getWidth();
+                            }
+
+                            // Formatted to mobileSize(1040*1536) size and set as home
+                            Bitmap trimBmp = Bitmap.createBitmap(tmpBitmap,startX,0,set_bitmap_width,tmpBitmap.getHeight(), null, true);
+                            wallpaperManager.setBitmap(trimBmp, null, true, WallpaperManager.FLAG_SYSTEM);
+                        }else{
+                            wallpaperManager.setBitmap(image, null, true, WallpaperManager.FLAG_SYSTEM);
+                        }
+
                     }
                 } catch (IOException ex) {
+                    ex.printStackTrace();
+                    return false;
+                }catch (Exception ex) {
                     ex.printStackTrace();
                     return false;
                 }
                 break;
             }
             case "4": {
+                // Pass when setting lock/home(both) screen
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
