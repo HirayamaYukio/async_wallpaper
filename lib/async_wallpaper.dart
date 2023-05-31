@@ -99,6 +99,11 @@ class AsyncWallpaper {
     int top = 0,
     int right = 0,
     int bottom = 0,
+    int deviceWidth = 0,
+    int deviceHeight = 0,
+    bool rectangleFlg = false,
+    int centerX = 0,
+    int userCorrection = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -113,6 +118,12 @@ class AsyncWallpaper {
 	    'top': top,
 	    'right': right,
 	    'bottom': bottom,
+      'deviceWidth': deviceWidth,
+      'deviceHeight': deviceHeight,
+      'rectangleFlg': rectangleFlg,
+      'centerX': centerX,
+      'userCorrection': userCorrection,
+
     };
 
     String location = _SET_BOTH_WALLPAPER;
@@ -173,6 +184,11 @@ class AsyncWallpaper {
     int top = 0,
     int right = 0,
     int bottom = 0,
+    int deviceWidth = 0,
+    int deviceHeight = 0,
+    bool rectangleFlg = false,
+    int centerX = 0,
+    int userCorrection = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -187,6 +203,11 @@ class AsyncWallpaper {
       'top': top,
       'right': right,
       'bottom': bottom,
+      'deviceWidth': deviceWidth,
+      'deviceHeight': deviceHeight,
+      'rectangleFlg': rectangleFlg,
+      'centerX': centerX,
+      'userCorrection': userCorrection,
     };
 
     result = await _channel.invokeMethod(
@@ -230,6 +251,11 @@ class AsyncWallpaper {
     int top = 0,
     int right = 0,
     int bottom = 0,
+    int deviceWidth = 0,
+    int deviceHeight = 0,
+    bool rectangleFlg = false,
+    int centerX = 0,
+    int userCorrection = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -244,6 +270,11 @@ class AsyncWallpaper {
       'top': top,
       'right': right,
       'bottom': bottom,
+      'deviceWidth': deviceWidth,
+      'deviceHeight': deviceHeight,
+      'rectangleFlg': rectangleFlg,
+      'centerX': centerX,
+      'userCorrection': userCorrection,
     };
 
     result = await _channel.invokeMethod(
@@ -288,6 +319,11 @@ class AsyncWallpaper {
     int top = 0,
     int right = 0,
     int bottom = 0,
+    int deviceWidth = 0,
+    int deviceHeight = 0,
+    bool rectangleFlg = false,
+    int centerX = 0,
+    int userCorrection = 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -302,6 +338,11 @@ class AsyncWallpaper {
       'top': top,
       'right': right,
       'bottom': bottom,
+      'deviceWidth': deviceWidth,
+      'deviceHeight': deviceHeight,
+      'rectangleFlg': rectangleFlg,
+      'centerX': centerX,
+      'userCorrection': userCorrection,
     };
 
     String location = _SET_BOTH_WALLPAPER_FILE;

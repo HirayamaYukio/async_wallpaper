@@ -72,6 +72,9 @@ class _MyAppState extends State<MyApp> {
     int top = 0; // Top edge coordinate position
     int right = left + deviceWidth.round(); // Rightmost coordinate position
     int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -82,6 +85,11 @@ class _MyAppState extends State<MyApp> {
         top: top,
         right: right,
         bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -112,6 +120,9 @@ class _MyAppState extends State<MyApp> {
     int top = 0; // Top edge coordinate position
     int right = left + deviceWidth.round(); // Rightmost coordinate position
     int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -123,6 +134,11 @@ class _MyAppState extends State<MyApp> {
         top: top,
         right: right,
         bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -153,6 +169,9 @@ class _MyAppState extends State<MyApp> {
     int top = 0; // Top edge coordinate position
     int right = left + deviceWidth.round(); // Rightmost coordinate position
     int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -164,6 +183,11 @@ class _MyAppState extends State<MyApp> {
         top: top,
         right: right,
         bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -194,6 +218,10 @@ class _MyAppState extends State<MyApp> {
     int top = 0; // Top edge coordinate position
     int right = left + deviceWidth.round(); // Rightmost coordinate position
     int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
+
     var file = await DefaultCacheManager().getSingleFile(url);
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -205,6 +233,11 @@ class _MyAppState extends State<MyApp> {
         top: top,
         right: right,
         bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -235,6 +268,9 @@ class _MyAppState extends State<MyApp> {
     int top = 0; // Top edge coordinate position
     int right = left + deviceWidth.round(); // Rightmost coordinate position
     int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaperNative(
@@ -244,6 +280,11 @@ class _MyAppState extends State<MyApp> {
         top: top,
         right: right,
         bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -274,6 +315,9 @@ class _MyAppState extends State<MyApp> {
 	  int top = 0; // Top edge coordinate position
 	  int right = left + deviceWidth.round(); // Rightmost coordinate position
 	  int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await AsyncWallpaper.setWallpaper(
@@ -284,6 +328,11 @@ class _MyAppState extends State<MyApp> {
 		    top: top,
 		    right: right,
 		    bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -314,6 +363,9 @@ class _MyAppState extends State<MyApp> {
 	  int top = 0; // Top edge coordinate position
 	  int right = left + deviceWidth.round(); // Rightmost coordinate position
 	  int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -325,6 +377,11 @@ class _MyAppState extends State<MyApp> {
 		    top: top,
 		    right: right,
 		    bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
@@ -354,6 +411,9 @@ class _MyAppState extends State<MyApp> {
 	  int top = 0; // Top edge coordinate position
 	  int right = left + deviceWidth.round(); // Rightmost coordinate position
 	  int bottom = top + deviceHeight.round(); // Bottom edge coordinate position
+    bool rectangleFlg = false;
+    int centerX = 0;
+    int userCorrection = 0;
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
@@ -365,6 +425,11 @@ class _MyAppState extends State<MyApp> {
         top: top,
         right: right,
 		    bottom: bottom,
+        deviceWidth:deviceWidth.round(),
+        deviceHeight:deviceHeight.round(),
+        rectangleFlg: rectangleFlg,
+        centerX: centerX,
+        userCorrection: userCorrection,
         toastDetails: ToastDetails.success(),
         errorToastDetails: ToastDetails.error(),
       )
