@@ -9,12 +9,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.BoringLayout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.graphics.Rect;
@@ -76,7 +79,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
             setWallPaperTask.execute(new Pair(resource, "1"));
         }
 
@@ -92,7 +95,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
             setWallPaperTask.execute(new Pair(resource, "2"));
         }
 
@@ -108,7 +111,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
             setWallPaperTask.execute(new Pair(resource, "3"));
         }
 
@@ -124,7 +127,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap);
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
             setWallPaperTask.execute(new Pair(resource, "4"));
         }
 
@@ -462,14 +465,23 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
     private final Context mContext;
     private final Map<String, Integer> mMap;
     private final Map<String, Boolean> fMap;
-	private double const_mobileBaseSizeY = 1536.0;
-	private double const_mobileBaseSizeX = 1040.0;
+    private final double mobilePixelWidth;
+    private final double mobilePixelHeight;
+    private Activity mAct;
+    private final double const_OffsetScale = 1.2 ;//Variables to allow scrolling on the home screen
+
+
 
     //public SetWallPaperTask(final Context context) {
-    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap, final Map<String, Boolean> flgMap) {
+    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap, final Map<String, Boolean> flgMap, Activity activity) {
         mContext = context;
 		mMap = coordinateMap;
         fMap = flgMap;
+        mAct = activity;
+        Point point = new Point();
+        mAct.getWindowManager().getDefaultDisplay().getRealSize(point);
+        mobilePixelWidth = (double)point.x;
+        mobilePixelHeight = (double)point.y;
     }
 
     @Override
@@ -512,7 +524,7 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                         if(fMap.get("rectangleFlg")){
                             Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
                             wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_LOCK);
-                        }else if(!fMap.get("rectangleFlg") && ImageWidth > ImageHeight){
+                        }else if(!fMap.get("rectangleFlg") && ImageWidth >= ImageHeight){
                             Map<String, Integer> map = mMap;
                             int device_width = mMap.get("deviceWidth");
                             int device_height = mMap.get("deviceHeight");
@@ -525,22 +537,22 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             int Cw = (int) ((float) Dw / (float) Dh * ImageHeight);
                             int Ch = (int)((float)ImageHeight / (float)Dw * Dh);
 
-                            double scale = const_mobileBaseSizeY/ImageHeight; // Calculate how many times the height of the image is the mobile base size
+                            double scale = mobilePixelHeight/ImageHeight; // Calculate how many times the height of the image is the mobile base size
                             int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
-                            int user_correction = (int)(mMap.get("userCorrection") * scale);
+                            int user_correction = (int)(mMap.get("userCorrection"));
 
                             // Resize to mobile base size based on height
-                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)const_mobileBaseSizeY, true);
+                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)mobilePixelHeight, true);
 
                             // Calculate start position X and end point
-                            startX = system_correction - (int)(const_mobileBaseSizeX/2) + user_correction;
-                            set_bitmap_width = (int)const_mobileBaseSizeX;
+                            startX = system_correction - (int)(mobilePixelWidth/2) + (int)(user_correction * const_OffsetScale);
+                            set_bitmap_width = (int)(mobilePixelWidth * const_OffsetScale);
 
                             // Change the starting position if the width overflows
                             if(startX < 0){
                                 startX = 0;
                             }else if(startX+set_bitmap_width > tmpBitmap.getWidth()){
-                                startX = tmpBitmap.getWidth() - (int)const_mobileBaseSizeX;
+                                startX = tmpBitmap.getWidth() - (int)mobilePixelWidth;
                             }else if(tmpBitmap.getWidth() < set_bitmap_width){
                                 startX = 0;
                                 set_bitmap_width = tmpBitmap.getWidth();
@@ -576,7 +588,7 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                         if(fMap.get("rectangleFlg")){
                             Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
                             wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_SYSTEM);
-                        }else if(!fMap.get("rectangleFlg") && ImageWidth > ImageHeight){
+                        }else if(!fMap.get("rectangleFlg") && ImageWidth >= ImageHeight){
                             Map<String, Integer> map = mMap;
                             int device_width = mMap.get("deviceWidth");
                             int device_height = mMap.get("deviceHeight");
@@ -589,22 +601,22 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             int Cw = (int) ((float) Dw / (float) Dh * ImageHeight);
                             int Ch = (int)((float)ImageHeight / (float)Dw * Dh);
 
-                            double scale = const_mobileBaseSizeY/ImageHeight; // Calculate how many times the height of the image is the mobile base size
+                            double scale = mobilePixelHeight/ImageHeight; // Calculate how many times the height of the image is the mobile base size
                             int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
-                            int user_correction = (int)(mMap.get("userCorrection") * scale);
+                            int user_correction = (int)(mMap.get("userCorrection"));
 
                             // Resize to mobile base size based on height
-                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)const_mobileBaseSizeY, true);
+                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)mobilePixelHeight, true);
 
                             // Calculate start position X and end point
-                            startX = system_correction - (int)(const_mobileBaseSizeX/2) + user_correction;
-                            set_bitmap_width = (int)const_mobileBaseSizeX;
+                            startX = system_correction - (int)(mobilePixelWidth/2) + (int)(user_correction * const_OffsetScale);
+                            set_bitmap_width = (int)(mobilePixelWidth * const_OffsetScale);
 
                             // Change the starting position if the width overflows
                             if(startX < 0){
                                 startX = 0;
                             }else if(startX+set_bitmap_width > tmpBitmap.getWidth()){
-                                startX = tmpBitmap.getWidth() - (int)const_mobileBaseSizeX;
+                                startX = tmpBitmap.getWidth() - (int)mobilePixelWidth;
                             }else if(tmpBitmap.getWidth() < set_bitmap_width){
                                 startX = 0;
                                 set_bitmap_width = tmpBitmap.getWidth();
@@ -613,6 +625,8 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             // Formatted to mobileSize(1040*1536) size and set as home
                             Bitmap trimBmp = Bitmap.createBitmap(tmpBitmap,startX,0,set_bitmap_width,tmpBitmap.getHeight(), null, true);
                             wallpaperManager.setBitmap(trimBmp, null, true, WallpaperManager.FLAG_SYSTEM);
+                            // オフセットステップを設定
+
                         }else{
                             wallpaperManager.setBitmap(image, null, true, WallpaperManager.FLAG_SYSTEM);
                         }
