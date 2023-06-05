@@ -104,6 +104,8 @@ class AsyncWallpaper {
     bool rectangleFlg = false,
     int centerX = 0,
     int userCorrection = 0,
+    double devicePixelWidth = 0,
+    double devicePixelHeight= 0,
     ToastDetails? toastDetails,
     ToastDetails? errorToastDetails,
   }) async {
@@ -123,6 +125,8 @@ class AsyncWallpaper {
       'rectangleFlg': rectangleFlg,
       'centerX': centerX,
       'userCorrection': userCorrection,
+      'devicePixelWidth': devicePixelWidth,
+      'devicePixelHeight': devicePixelHeight,
 
     };
 

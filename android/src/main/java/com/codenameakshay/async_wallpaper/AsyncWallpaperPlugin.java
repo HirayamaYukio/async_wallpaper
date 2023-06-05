@@ -64,6 +64,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
     private boolean goToHome;
     Map<String, Integer> coordinateMap = new HashMap<String, Integer>();
     Map<String, Boolean> flgMap = new HashMap<String, Boolean>();
+    Map<String, Double> doubleMap = new HashMap<String, Double>();
 	private int left;
 	private int top;
 	private int right;
@@ -73,71 +74,91 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
     private boolean rectangleFlg;
     private int centerX;
     private int userCorrection;
+    private Point mobilePixel;
+    private double devicePixelWidth;
+    private double devicePixelHeight;
 
 
     private Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
+            Point setPoint = new Point((int)devicePixelWidth,(int)devicePixelHeight);
+            if (devicePixelWidth == 0 || devicePixelHeight == 0) setPoint = mobilePixel;
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, setPoint);
             setWallPaperTask.execute(new Pair(resource, "1"));
         }
 
         @Override
         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+            android.util.Log.i("Arguments ", "onBitmapFailed: " + "");
         }
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
+            android.util.Log.i("Arguments ", "onPrepareLoad: " + "");
         }
     };
     private Target target1 = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
+            Point setPoint = new Point((int)devicePixelWidth,(int)devicePixelHeight);
+            if (devicePixelWidth == 0 || devicePixelHeight == 0) setPoint = mobilePixel;
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, setPoint);
             setWallPaperTask.execute(new Pair(resource, "2"));
         }
 
         @Override
         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+            android.util.Log.i("Arguments ", "onBitmapFailed: " + "");
         }
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
+            android.util.Log.i("Arguments ", "onPrepareLoad: " + "");
         }
     };
     private Target target2 = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
+            Point setPoint = new Point((int)devicePixelWidth,(int)devicePixelHeight);
+            if (devicePixelWidth == 0 || devicePixelHeight == 0) setPoint = mobilePixel;
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, setPoint);
             setWallPaperTask.execute(new Pair(resource, "3"));
         }
 
         @Override
         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+            android.util.Log.i("Arguments ", "onBitmapFailed: " + "");
         }
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
+            android.util.Log.i("Arguments ", "onPrepareLoad: " + "");
         }
     };
     private Target target3 = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + "Image Downloaded");
-            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, activity);
+            Point setPoint = new Point((int)devicePixelWidth,(int)devicePixelHeight);
+            if (devicePixelWidth == 0 || devicePixelHeight == 0) setPoint = mobilePixel;
+            SetWallPaperTask setWallPaperTask = new SetWallPaperTask(context, coordinateMap, flgMap, setPoint);
             setWallPaperTask.execute(new Pair(resource, "4"));
         }
 
         @Override
         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+            android.util.Log.i("Arguments ", "onBitmapFailed: " + "");
         }
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
+            android.util.Log.i("Arguments ", "onPrepareLoad: " + "");
         }
+
     };
 
     @Override
@@ -147,36 +168,44 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         context = flutterPluginBinding.getApplicationContext();
         redirectToLiveWallpaper = false;
         goToHome = false;
+        android.util.Log.i("Arguments ", "onAttachedToEngine: " + context);
     }
 
     @Override
     public void onDetachedFromActivity() {
+        android.util.Log.i("Arguments ", "onDetachedFromActivity: " + "");
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding flutterPluginBinding) {
+        android.util.Log.i("Arguments ", "onReattachedToActivityForConfigChanges: " + "");
         if (redirectToLiveWallpaper && goToHome) {
             home();
         }
     }
 
-
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding flutterPluginBinding) {
         activity = flutterPluginBinding.getActivity();
+        Point point = new Point();
+        activity.getWindowManager().getDefaultDisplay().getRealSize(point);
+        mobilePixel = point;
+        android.util.Log.i("Arguments ", "onAttachedToActivity: " + mobilePixel.x + " " + mobilePixel.y);
     }
 
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
+        android.util.Log.i("Arguments ", "onDetachedFromActivityForConfigChanges: " + "");
     }
 
     public void home() {
+        android.util.Log.i("Arguments ", "home: " +"");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            activity.startActivity(intent);
+            android.util.Log.i("Arguments ", "home: " + mobilePixel.x + " " + mobilePixel.y);
         }
     }
 
@@ -198,6 +227,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -207,7 +238,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
-
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target);
             // result.success(1);
@@ -223,6 +255,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -231,6 +265,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("deviceHeight", deviceHeight);
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             flgMap.put("rectangleFlg",rectangleFlg);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target);
@@ -248,6 +284,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -257,8 +295,9 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
-            // android.util.Log.i("Arguments ", "configureFlutterEngine(left, top, right, bottom): " + left.toString() + ", "+ left.toString() + ", " + right.toString() + ", " + bottom.toString());
             Picasso.get().load(url).into(target1);
             try {
                 Thread.sleep(2000);
@@ -280,6 +319,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -289,6 +330,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target2);
             try {
@@ -311,6 +354,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -320,6 +365,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load(url).into(target3);
             try {
@@ -342,6 +389,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -351,6 +400,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target1);
             if (goToHome) home();
@@ -368,6 +419,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -377,6 +430,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target2);
             if (goToHome) home();
@@ -394,6 +449,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             rectangleFlg = call.argument("rectangleFlg");
             centerX = call.argument("centerX");
             userCorrection = call.argument("userCorrection");
+            devicePixelWidth = call.argument("devicePixelWidth");
+            devicePixelHeight = call.argument("devicePixelHeight");
             coordinateMap.put("left", left);
             coordinateMap.put("top", top);
             coordinateMap.put("right", right);
@@ -403,6 +460,8 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             coordinateMap.put("centerX",centerX);
             coordinateMap.put("userCorrection",userCorrection);
             flgMap.put("rectangleFlg",rectangleFlg);
+            doubleMap.put("devicePixelWidth",devicePixelWidth);
+            doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target3);
             if (goToHome) home();
@@ -467,21 +526,17 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
     private final Map<String, Boolean> fMap;
     private final double mobilePixelWidth;
     private final double mobilePixelHeight;
-    private Activity mAct;
-    private final double const_OffsetScale = 1.2 ;//Variables to allow scrolling on the home screen
+    private final double const_OffsetScale = 1.1 ;//Variables to allow scrolling on the home screen
 
 
 
     //public SetWallPaperTask(final Context context) {
-    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap, final Map<String, Boolean> flgMap, Activity activity) {
+    public SetWallPaperTask(final Context context, final Map<String, Integer> coordinateMap, final Map<String, Boolean> flgMap, Point mobilePixel) {
         mContext = context;
 		mMap = coordinateMap;
         fMap = flgMap;
-        mAct = activity;
-        Point point = new Point();
-        mAct.getWindowManager().getDefaultDisplay().getRealSize(point);
-        mobilePixelWidth = (double)point.x;
-        mobilePixelHeight = (double)point.y;
+        mobilePixelWidth = (double)mobilePixel.x;
+        mobilePixelHeight = (double)mobilePixel.y;
     }
 
     @Override
