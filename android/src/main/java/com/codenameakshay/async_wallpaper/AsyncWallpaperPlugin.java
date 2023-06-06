@@ -579,7 +579,7 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                         if(fMap.get("rectangleFlg")){
                             Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
                             wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_LOCK);
-                        }else if(!fMap.get("rectangleFlg") && ImageWidth >= ImageHeight){
+                        }else if(!fMap.get("rectangleFlg")){
                             Map<String, Integer> map = mMap;
                             int device_width = mMap.get("deviceWidth");
                             int device_height = mMap.get("deviceHeight");
@@ -591,13 +591,26 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             int Dh = wallpaperManager.getDesiredMinimumHeight();
                             int Cw = (int) ((float) Dw / (float) Dh * ImageHeight);
                             int Ch = (int)((float)ImageHeight / (float)Dw * Dh);
+                            double scale = 1.0;
+                            Bitmap tmpBitmap;
+                            if(1000 <= (int)image.getWidth() && (int)image.getWidth() <= 1050 && 1500 <= (int)image.getHeight() && (int)image.getHeight() <= 1550){
+                                //Cut a little under the wallpaper
+                                Bitmap cutBottomBmp = Bitmap.createBitmap(image,0,0,image.getWidth(),(int)(image.getHeight() * 0.9), null,true);
+                                scale = mobilePixelHeight / cutBottomBmp.getHeight(); // Calculate how many times the height of the image is the mobile base size
+                                // Resize to mobile base size based on height
+                                tmpBitmap = Bitmap.createScaledBitmap(cutBottomBmp, (int) (cutBottomBmp.getWidth() * scale), (int) mobilePixelHeight, true);
 
-                            double scale = mobilePixelHeight/ImageHeight; // Calculate how many times the height of the image is the mobile base size
+                            }else{
+                                // Calculate how many times the height of the image is the mobile base size
+                                scale = mobilePixelHeight/ImageHeight;
+                                // Resize to mobile base size based on height
+                                tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)mobilePixelHeight, true);
+
+                            }
                             int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
                             int user_correction = (int)(mMap.get("userCorrection"));
 
-                            // Resize to mobile base size based on height
-                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)mobilePixelHeight, true);
+
 
                             // Calculate start position X and end point
                             startX = system_correction - (int)(mobilePixelWidth/2) + (int)(user_correction * const_OffsetScale);
@@ -643,7 +656,7 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                         if(fMap.get("rectangleFlg")){
                             Rect rect = new Rect(mMap.get("left"),mMap.get("top"),mMap.get("right"),mMap.get("bottom"));
                             wallpaperManager.setBitmap(pairs[0].first, rect, true, WallpaperManager.FLAG_SYSTEM);
-                        }else if(!fMap.get("rectangleFlg") && ImageWidth >= ImageHeight){
+                        }else if(!fMap.get("rectangleFlg")){
                             Map<String, Integer> map = mMap;
                             int device_width = mMap.get("deviceWidth");
                             int device_height = mMap.get("deviceHeight");
@@ -655,13 +668,23 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             int Dh = wallpaperManager.getDesiredMinimumHeight();
                             int Cw = (int) ((float) Dw / (float) Dh * ImageHeight);
                             int Ch = (int)((float)ImageHeight / (float)Dw * Dh);
+                            double scale = 1.0;
+                            Bitmap tmpBitmap;
 
-                            double scale = mobilePixelHeight/ImageHeight; // Calculate how many times the height of the image is the mobile base size
+                            if(1000 <= (int)image.getWidth() && (int)image.getWidth() <= 1050 && 1500 <= (int)image.getHeight() && (int)image.getHeight() <= 1550){
+                                //Cut a little under the wallpaper
+                                Bitmap cutBottomBmp = Bitmap.createBitmap(image,0,0,image.getWidth(),(int)(image.getHeight() * 0.9), null,true);
+                                scale = mobilePixelHeight / cutBottomBmp.getHeight(); // Calculate how many times the height of the image is the mobile base size
+                                // Resize to mobile base size based on height
+                                tmpBitmap = Bitmap.createScaledBitmap(cutBottomBmp, (int) (cutBottomBmp.getWidth() * scale), (int) mobilePixelHeight, true);
+                            }else{
+                                // Calculate how many times the height of the image is the mobile base size
+                                scale = mobilePixelHeight/ImageHeight;
+                                // Resize to mobile base size based on height
+                                tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)mobilePixelHeight, true);
+                            }
                             int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
                             int user_correction = (int)(mMap.get("userCorrection"));
-
-                            // Resize to mobile base size based on height
-                            Bitmap tmpBitmap = Bitmap.createScaledBitmap(image,(int)(ImageWidth * scale),(int)mobilePixelHeight, true);
 
                             // Calculate start position X and end point
                             startX = system_correction - (int)(mobilePixelWidth/2) + (int)(user_correction * const_OffsetScale);
@@ -671,7 +694,7 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             if(startX < 0){
                                 startX = 0;
                             }else if(startX+set_bitmap_width > tmpBitmap.getWidth()){
-                                startX = tmpBitmap.getWidth() - (int)mobilePixelWidth;
+                                startX = tmpBitmap.getWidth() - set_bitmap_width;
                             }else if(tmpBitmap.getWidth() < set_bitmap_width){
                                 startX = 0;
                                 set_bitmap_width = tmpBitmap.getWidth();
@@ -680,8 +703,6 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             // Formatted to mobileSize(1040*1536) size and set as home
                             Bitmap trimBmp = Bitmap.createBitmap(tmpBitmap,startX,0,set_bitmap_width,tmpBitmap.getHeight(), null, true);
                             wallpaperManager.setBitmap(trimBmp, null, true, WallpaperManager.FLAG_SYSTEM);
-                            // オフセットステップを設定
-
                         }else{
                             wallpaperManager.setBitmap(image, null, true, WallpaperManager.FLAG_SYSTEM);
                         }
