@@ -634,10 +634,6 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
                             Bitmap homeTrimBmp = crateSetBitmap(wallpaperManager,image);
                             wallpaperManager.setBitmap(homeTrimBmp, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
 
-                            // Lock setting
-                            //mMap.put("userCorrection",0); // Reset adjustments for home screen
-                            //Bitmap lockTrimBmp = crateSetBitmap(wallpaperManager,image);
-                            //wallpaperManager.setBitmap(lockTrimBmp, null, true, WallpaperManager.FLAG_LOCK);
                         }else{
                             wallpaperManager.setBitmap(image, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
                         }
