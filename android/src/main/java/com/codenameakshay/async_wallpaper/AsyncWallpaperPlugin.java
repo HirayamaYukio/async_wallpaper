@@ -214,6 +214,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         if (call.method.equals("getPlatformVersion")) {
             result.success("Android " + android.os.Build.VERSION.RELEASE);
         } else if (call.method.equals("set_wallpaper")) {
+            // Added parameter for rectangle trimming
             String url = call.argument("url"); // .argument returns the correct type
             goToHome = call.argument("goToHome"); // .argument returns the correct type
             left = call.argument("left");
