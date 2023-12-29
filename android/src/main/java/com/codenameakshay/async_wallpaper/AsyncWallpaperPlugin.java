@@ -3,7 +3,6 @@ package com.codenameakshay.async_wallpaper;
 import android.app.Activity;
 import android.app.Application;
 import android.app.WallpaperManager;
-import android.graphics.BitmapFactory;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.BoringLayout;
@@ -48,15 +46,15 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+import io.flutter.plugin.common.PluginRegistry;
+
 /**
  * AsyncWallpaperPlugin
  */
 public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, MethodCallHandler, ActivityAware {
-    /// The MethodChannel that will the communication between Flutter and native
-    /// Android
+    /// The MethodChannel that will the communication between Flutter and native Android
     ///
-    /// This local reference serves to register the plugin with the Flutter Engine
-    /// and unregister it
+    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
     public static Context context;
@@ -195,6 +193,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         android.util.Log.i("Arguments ", "onAttachedToActivity: " + mobilePixel.x + " " + mobilePixel.y);
     }
 
+
     @Override
     public void onDetachedFromActivityForConfigChanges() {
         android.util.Log.i("Arguments ", "onDetachedFromActivityForConfigChanges: " + "");
@@ -306,8 +305,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            if (goToHome)
-                home();
+            if (goToHome) home();
             // result.success(1);
 
         } else if (call.method.equals("set_home_wallpaper")) {
@@ -342,8 +340,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            if (goToHome)
-                home();
+            if (goToHome) home();
             // result.success(1);
 
         } else if (call.method.equals("set_both_wallpaper")) {
@@ -378,8 +375,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            if (goToHome)
-                home();
+            if (goToHome) home();
             // result.success(1);
 
         } else if (call.method.equals("set_lock_wallpaper_file")) {
@@ -409,8 +405,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target1);
-            if (goToHome)
-                home();
+            if (goToHome) home();
             // result.success(1);
 
         } else if (call.method.equals("set_home_wallpaper_file")) {
@@ -440,8 +435,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target2);
-            if (goToHome)
-                home();
+            if (goToHome) home();
             // result.success(1);
 
         } else if (call.method.equals("set_both_wallpaper_file")) {
@@ -471,8 +465,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
             doubleMap.put("devicePixelHeight",devicePixelHeight);
             android.util.Log.i("Arguments ", "configureFlutterEngine: " + url);
             Picasso.get().load("file://" + url).into(target3);
-            if (goToHome)
-                home();
+            if (goToHome) home();
             // result.success(1);
 
         } else if (call.method.equals("set_video_wallpaper")) {
@@ -526,6 +519,7 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
     }
 }
 
+
 class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean> {
 
     private final Context mContext;
@@ -552,22 +546,18 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
             case "1": {
                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
                 try {
-                    int WITH_OTHER_APP_CODE = 733;
                     Uri tempUri = getImageUri(mContext, pairs[0].first);
                     Log.i("Arguments ", "configureFlutterEngine: " + "Saved image to storage");
                     File finalFile = new File(getRealPathFromURI(tempUri));
                     Uri contentURI = getImageContentUri(mContext, finalFile.getAbsolutePath());
                     Log.i("Arguments ", "configureFlutterEngine: " + "Opening crop intent");
-                    Intent setWall = new Intent(Intent.ACTION_ATTACH_DATA);
-                    setWall.setDataAndType(contentURI, "image/*");
-                    setWall.putExtra("mimeType", "image/*");
-                    setWall.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    setWall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    Intent chooser = Intent.createChooser(setWall, "Apply with external app");
-                    chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(
-                            chooser,
-                            new Bundle(WITH_OTHER_APP_CODE));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        final Intent intentCrop = wallpaperManager.getCropAndSetWallpaperIntent(contentURI);
+                        intentCrop.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intentCrop);
+                    } else {
+                        wallpaperManager.setBitmap(pairs[0].first);
+                    }
                 } catch (Exception ex) {
                     try {
                         wallpaperManager.setBitmap(pairs[0].first);
@@ -697,8 +687,6 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
         int system_correction = (int)(centerX * scale); // Correct center coordinate X according to resizing
         int user_correction = (int)(mMap.get("userCorrection"));
 
-
-
         // Calculate start position X and end point
         startX = system_correction - (int)(mobilePixelWidth/2) + (int)(user_correction * const_OffsetScale);
         set_bitmap_width = (int)(mobilePixelWidth * const_OffsetScale);
@@ -713,6 +701,8 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
             set_bitmap_width = tmpBitmap.getWidth();
         }
 
+        // Adjust to the maximum size when it extends beyond the device size.
+        if (tmpBitmap.getWidth() < set_bitmap_width) set_bitmap_width = tmpBitmap.getWidth();
         // Formatted to mobileSize(1040*1536) size and set as home
         Bitmap trimBmp = Bitmap.createBitmap(tmpBitmap,startX,0,set_bitmap_width,tmpBitmap.getHeight(), null, true);
         return trimBmp;
@@ -736,8 +726,8 @@ class SetWallPaperTask extends AsyncTask<Pair<Bitmap, String>, Boolean, Boolean>
     public static Uri getImageContentUri(Context context, String absPath) {
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.Media._ID }, MediaStore.Images.Media.DATA + "=? ",
-                new String[] { absPath }, null);
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=? ",
+                new String[]{absPath}, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
